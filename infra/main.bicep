@@ -114,6 +114,25 @@ param enableAzureMonitorTracing bool = false
 @description('Do we want to use the Azure Monitor tracing for GenAI content recording')
 param azureTracingGenAIContentRecordingEnabled bool = false
 
+@description('Enable Azure API Management for the API')
+param enableAPIM bool = false
+
+@description('APIM Publisher Name')
+param apimPublisherName string = 'Your Organization'
+
+@description('APIM Publisher Email')
+param apimPublisherEmail string = 'admin@yourorg.com'
+
+@description('APIM SKU')
+@allowed([
+  'Consumption'
+  'Developer'
+  'Basic'
+  'Standard'
+  'Premium'
+])
+param apimSku string = 'Consumption'
+
 param templateValidationMode bool = false
 
 @description('Random seed to be used during generation of new resources suffixes.')
@@ -299,7 +318,22 @@ module api 'api.bicep' = {
   }
 }
 
-
+// API Management Gateway (optional)
+module apim 'core/gateway/apim.bicep' = if (enableAPIM) {
+  name: 'apim'
+  scope: rg
+  params: {
+    name: 'apim-${resourceToken}'
+    location: location
+    tags: tags
+    publisherName: apimPublisherName
+    publisherEmail: apimPublisherEmail
+    sku: apimSku
+    backendApiUrl: 'https://${api.outputs.SERVICE_API_URI}'
+    enableCors: true
+    corsAllowedOrigins: ['*']
+  }
+}
 
 module userRoleAzureAIDeveloper 'core/security/role.bicep' = {
   name: 'user-role-azureai-developer'

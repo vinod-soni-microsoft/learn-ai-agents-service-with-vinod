@@ -1,0 +1,262 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.37.4.10188",
+      "templateHash": "2763589936887463106"
+    },
+    "description": "Creates an Azure API Management instance."
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API Management service instance"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "The location of the API Management service instance"
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "The tags to apply to the API Management service instance"
+      }
+    },
+    "publisherEmail": {
+      "type": "string",
+      "metadata": {
+        "description": "The email address of the owner of the service"
+      }
+    },
+    "publisherName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the owner of the service"
+      }
+    },
+    "sku": {
+      "type": "string",
+      "defaultValue": "Consumption",
+      "allowedValues": [
+        "Consumption",
+        "Developer",
+        "Basic",
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "The pricing tier of this API Management service"
+      }
+    },
+    "capacity": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "The instance size of this API Management service"
+      }
+    },
+    "backendApiUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "The backend API base URL"
+      }
+    },
+    "enableCors": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable CORS policy"
+      }
+    },
+    "corsAllowedOrigins": {
+      "type": "array",
+      "defaultValue": [
+        "*"
+      ],
+      "metadata": {
+        "description": "Allowed CORS origins"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2023-05-01-preview",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "sku": {
+        "name": "[parameters('sku')]",
+        "capacity": "[parameters('capacity')]"
+      },
+      "properties": {
+        "publisherEmail": "[parameters('publisherEmail')]",
+        "publisherName": "[parameters('publisherName')]",
+        "notificationSenderEmail": "[parameters('publisherEmail')]"
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      }
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/backends",
+      "apiVersion": "2023-05-01-preview",
+      "name": "[format('{0}/{1}', parameters('name'), 'fastapi-backend')]",
+      "properties": {
+        "description": "FastAPI Backend Service",
+        "url": "[parameters('backendApiUrl')]",
+        "protocol": "http"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service', parameters('name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/apis",
+      "apiVersion": "2023-05-01-preview",
+      "name": "[format('{0}/{1}', parameters('name'), 'agents-api')]",
+      "properties": {
+        "displayName": "AI Agents API",
+        "description": "API for AI Agents service",
+        "path": "api",
+        "protocols": [
+          "https"
+        ],
+        "subscriptionRequired": false,
+        "serviceUrl": "[parameters('backendApiUrl')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service', parameters('name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/apis/operations",
+      "apiVersion": "2023-05-01-preview",
+      "name": "[format('{0}/{1}/{2}', parameters('name'), 'agents-api', 'chat')]",
+      "properties": {
+        "displayName": "Chat with Agent",
+        "method": "POST",
+        "urlTemplate": "/chat",
+        "description": "Send a message to the AI agent",
+        "request": {
+          "headers": [
+            {
+              "name": "Content-Type",
+              "type": "string",
+              "defaultValue": "application/json",
+              "required": true
+            }
+          ]
+        },
+        "responses": [
+          {
+            "statusCode": 200,
+            "description": "Successful response",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "type": "string",
+                "defaultValue": "text/event-stream"
+              }
+            ]
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service/apis', parameters('name'), 'agents-api')]"
+      ]
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/apis/operations",
+      "apiVersion": "2023-05-01-preview",
+      "name": "[format('{0}/{1}/{2}', parameters('name'), 'agents-api', 'chat-history')]",
+      "properties": {
+        "displayName": "Get Chat History",
+        "method": "GET",
+        "urlTemplate": "/chat/history",
+        "description": "Get chat history for the current session"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service/apis', parameters('name'), 'agents-api')]"
+      ]
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/apis/operations",
+      "apiVersion": "2023-05-01-preview",
+      "name": "[format('{0}/{1}/{2}', parameters('name'), 'agents-api', 'get-agent')]",
+      "properties": {
+        "displayName": "Get Agent Details",
+        "method": "GET",
+        "urlTemplate": "/agent",
+        "description": "Get agent configuration details"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service/apis', parameters('name'), 'agents-api')]"
+      ]
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/apis/operations",
+      "apiVersion": "2023-05-01-preview",
+      "name": "[format('{0}/{1}/{2}', parameters('name'), 'agents-api', 'azure-config')]",
+      "properties": {
+        "displayName": "Get Azure Configuration",
+        "method": "GET",
+        "urlTemplate": "/config/azure",
+        "description": "Get Azure configuration for frontend"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service/apis', parameters('name'), 'agents-api')]"
+      ]
+    },
+    {
+      "condition": "[parameters('enableCors')]",
+      "type": "Microsoft.ApiManagement/service/apis/policies",
+      "apiVersion": "2023-05-01-preview",
+      "name": "[format('{0}/{1}/{2}', parameters('name'), 'agents-api', 'policy')]",
+      "properties": {
+        "value": "<policies>\n  <inbound>\n    <cors allow-credentials=\"true\">\n      <allowed-origins>\n        ${join(map(corsAllowedOrigins, origin => '<origin>${origin}</origin>'), '\\n        ')}\n      </allowed-origins>\n      <allowed-methods>\n        <method>GET</method>\n        <method>POST</method>\n        <method>PUT</method>\n        <method>DELETE</method>\n        <method>OPTIONS</method>\n      </allowed-methods>\n      <allowed-headers>\n        <header>*</header>\n      </allowed-headers>\n    </cors>\n    <set-backend-service backend-id=\"fastapi-backend\" />\n    <base />\n  </inbound>\n  <backend>\n    <base />\n  </backend>\n  <outbound>\n    <base />\n  </outbound>\n  <on-error>\n    <base />\n  </on-error>\n</policies>\n"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service/apis', parameters('name'), 'agents-api')]"
+      ]
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ApiManagement/service', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "value": "[parameters('name')]"
+    },
+    "gatewayUrl": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ApiManagement/service', parameters('name')), '2023-05-01-preview').gatewayUrl]"
+    },
+    "portalUrl": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ApiManagement/service', parameters('name')), '2023-05-01-preview').portalUrl]"
+    },
+    "managementApiUrl": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ApiManagement/service', parameters('name')), '2023-05-01-preview').managementApiUrl]"
+    },
+    "scmUrl": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ApiManagement/service', parameters('name')), '2023-05-01-preview').scmUrl]"
+    },
+    "systemAssignedIdentityPrincipalId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ApiManagement/service', parameters('name')), '2023-05-01-preview', 'full').identity.principalId]"
+    }
+  }
+}

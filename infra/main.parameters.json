@@ -115,6 +115,18 @@
     },
     "templateValidationMode": {
       "value": "${TEMPLATE_VALIDATION_MODE=false}"
+    },
+    "enableAPIM": {
+      "value": "${ENABLE_APIM=false}"
+    },
+    "apimPublisherName": {
+      "value": "${APIM_PUBLISHER_NAME=Your Organization}"
+    },
+    "apimPublisherEmail": {
+      "value": "${APIM_PUBLISHER_EMAIL=admin@yourorg.com}"
+    },
+    "apimSku": {
+      "value": "${APIM_SKU=Consumption}"
     }
   }
 }
