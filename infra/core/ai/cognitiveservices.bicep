@@ -43,7 +43,6 @@ resource account 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
     networkAcls: networkAcls
     publicNetworkAccess: publicNetworkAccess
     disableLocalAuth: disableLocalAuth
-    restore: true
   }
 }
 

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "4005626094925253794"
+      "templateHash": "2627381629836900666"
     }
   },
   "parameters": {
@@ -537,7 +537,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "17414467037388056305"
+              "templateHash": "13614399569370058779"
             }
           },
           "parameters": {
@@ -2390,7 +2390,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "17203565886568736077"
+                      "templateHash": "4160265819087203578"
                     },
                     "description": "Creates an Azure Cognitive Services instance."
                   },
@@ -2482,8 +2482,7 @@
                         "customSubDomainName": "[parameters('customSubDomainName')]",
                         "networkAcls": "[parameters('networkAcls')]",
                         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
-                        "disableLocalAuth": "[parameters('disableLocalAuth')]",
-                        "restore": true
+                        "disableLocalAuth": "[parameters('disableLocalAuth')]"
                       }
                     },
                     {
@@ -4651,7 +4650,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "16234189227402903191"
+              "templateHash": "2857424727062780844"
             },
             "description": "Creates an Azure API Management instance."
           },
@@ -4737,8 +4736,7 @@
               "properties": {
                 "publisherEmail": "[parameters('publisherEmail')]",
                 "publisherName": "[parameters('publisherName')]",
-                "notificationSenderEmail": "[parameters('publisherEmail')]",
-                "restore": true
+                "notificationSenderEmail": "[parameters('publisherEmail')]"
               },
               "identity": {
                 "type": "SystemAssigned"

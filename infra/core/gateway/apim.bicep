@@ -46,7 +46,6 @@ resource apim 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
     publisherEmail: publisherEmail
     publisherName: publisherName
     notificationSenderEmail: publisherEmail
-    restore: true
   }
   identity: {
     type: 'SystemAssigned'

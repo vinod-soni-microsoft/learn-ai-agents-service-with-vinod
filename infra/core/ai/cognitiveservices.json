@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "17203565886568736077"
+      "templateHash": "4160265819087203578"
     },
     "description": "Creates an Azure Cognitive Services instance."
   },
@@ -97,8 +97,7 @@
         "customSubDomainName": "[parameters('customSubDomainName')]",
         "networkAcls": "[parameters('networkAcls')]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
-        "disableLocalAuth": "[parameters('disableLocalAuth')]",
-        "restore": true
+        "disableLocalAuth": "[parameters('disableLocalAuth')]"
       }
     },
     {
