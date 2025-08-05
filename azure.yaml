@@ -43,12 +43,19 @@ hooks:
       continueOnError: true
       interactive: true
 services:
-  api_and_frontend:
-    project: ./src
+  backend:
+    project: ./src/backend
     language: py
     host: containerapp
     docker:
-      image: api_and_frontend
+      image: backend
+      remoteBuild: true
+  frontend:
+    project: ./src/frontend
+    language: js
+    host: containerapp
+    docker:
+      image: frontend
       remoteBuild: true
 pipeline:
   variables:

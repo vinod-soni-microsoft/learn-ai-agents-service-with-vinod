@@ -153,7 +153,7 @@ resource corsPolicy 'Microsoft.ApiManagement/service/apis/policies@2023-05-01-pr
     value: '''
 <policies>
   <inbound>
-    <cors allow-credentials="true">
+    <cors allow-credentials="false">
       <allowed-origins>
         <origin>*</origin>
       </allowed-origins>
@@ -187,8 +187,8 @@ resource corsPolicy 'Microsoft.ApiManagement/service/apis/policies@2023-05-01-pr
 
 output id string = apim.id
 output name string = apim.name
-output gatewayUrl string = apim.properties.gatewayUrl
-output portalUrl string = apim.properties.portalUrl
-output managementApiUrl string = apim.properties.managementApiUrl
-output scmUrl string = apim.properties.scmUrl
+output gatewayUrl string = apim.properties.gatewayUrl ?? ''
+output portalUrl string = apim.properties.portalUrl ?? ''
+output managementApiUrl string = apim.properties.managementApiUrl ?? ''
+output scmUrl string = apim.properties.scmUrl ?? ''
 output systemAssignedIdentityPrincipalId string = apim.identity.principalId

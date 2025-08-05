@@ -10,23 +10,18 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "../api/static/react",
+    outDir: "dist",
     emptyOutDir: true,
-    manifest: true,
+    manifest: false,
     cssCodeSplit: false,
     rollupOptions: {
       input: {
-        main: "./src/main.tsx",
+        main: "./index.html",
       },
       output: {
-        entryFileNames: "assets/main-react-app.js",
-        chunkFileNames: "assets/[name].js",
-        assetFileNames: (assetInfo) => {
-          if (assetInfo.name === "style.css") {
-            return "assets/main-react-app.css";
-          }
-          return "assets/[name][extname]";
-        },
+        entryFileNames: "assets/[name].[hash].js",
+        chunkFileNames: "assets/[name].[hash].js",
+        assetFileNames: "assets/[name].[hash][extname]",
       },
     },
   },

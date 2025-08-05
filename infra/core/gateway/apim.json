@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "2857424727062780844"
+      "templateHash": "9860460685508499347"
     },
     "description": "Creates an Azure API Management instance."
   },
@@ -213,7 +213,7 @@
       "apiVersion": "2023-05-01-preview",
       "name": "[format('{0}/{1}/{2}', parameters('name'), 'agents-api', 'policy')]",
       "properties": {
-        "value": "<policies>\n  <inbound>\n    <cors allow-credentials=\"true\">\n      <allowed-origins>\n        <origin>*</origin>\n      </allowed-origins>\n      <allowed-methods>\n        <method>GET</method>\n        <method>POST</method>\n        <method>PUT</method>\n        <method>DELETE</method>\n        <method>OPTIONS</method>\n      </allowed-methods>\n      <allowed-headers>\n        <header>*</header>\n      </allowed-headers>\n    </cors>\n    <set-backend-service backend-id=\"fastapi-backend\" />\n    <base />\n  </inbound>\n  <backend>\n    <base />\n  </backend>\n  <outbound>\n    <base />\n  </outbound>\n  <on-error>\n    <base />\n  </on-error>\n</policies>\n"
+        "value": "<policies>\n  <inbound>\n    <cors allow-credentials=\"false\">\n      <allowed-origins>\n        <origin>*</origin>\n      </allowed-origins>\n      <allowed-methods>\n        <method>GET</method>\n        <method>POST</method>\n        <method>PUT</method>\n        <method>DELETE</method>\n        <method>OPTIONS</method>\n      </allowed-methods>\n      <allowed-headers>\n        <header>*</header>\n      </allowed-headers>\n    </cors>\n    <set-backend-service backend-id=\"fastapi-backend\" />\n    <base />\n  </inbound>\n  <backend>\n    <base />\n  </backend>\n  <outbound>\n    <base />\n  </outbound>\n  <on-error>\n    <base />\n  </on-error>\n</policies>\n"
       },
       "dependsOn": [
         "[resourceId('Microsoft.ApiManagement/service/apis', parameters('name'), 'agents-api')]"
@@ -232,18 +232,6 @@
     "gatewayUrl": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.ApiManagement/service', parameters('name')), '2023-05-01-preview').gatewayUrl]"
-    },
-    "portalUrl": {
-      "type": "string",
-      "value": "[reference(resourceId('Microsoft.ApiManagement/service', parameters('name')), '2023-05-01-preview').portalUrl]"
-    },
-    "managementApiUrl": {
-      "type": "string",
-      "value": "[reference(resourceId('Microsoft.ApiManagement/service', parameters('name')), '2023-05-01-preview').managementApiUrl]"
-    },
-    "scmUrl": {
-      "type": "string",
-      "value": "[reference(resourceId('Microsoft.ApiManagement/service', parameters('name')), '2023-05-01-preview').scmUrl]"
     },
     "systemAssignedIdentityPrincipalId": {
       "type": "string",

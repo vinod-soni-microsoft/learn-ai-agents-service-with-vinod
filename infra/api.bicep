@@ -17,6 +17,7 @@ param agentID string
 param enableAzureMonitorTracing bool
 param azureTracingGenAIContentRecordingEnabled bool
 param projectEndpoint string
+param frontendUrl string = ''
 
 resource apiIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: identityName
@@ -80,6 +81,10 @@ var env = [
     name: 'AZURE_EXISTING_AIPROJECT_ENDPOINT'
     value: projectEndpoint
   }
+  {
+    name: 'FRONTEND_URL'
+    value: frontendUrl
+  }
 ]
 
 
@@ -89,7 +94,7 @@ module app 'core/host/container-app-upsert.bicep' = {
   params: {
     name: name
     location: location
-    tags: union(tags, { 'azd-service-name': 'api_and_frontend' })
+    tags: union(tags, { 'azd-service-name': 'backend' })
     identityName: apiIdentity.name
     containerRegistryName: containerRegistryName
     containerAppsEnvironmentName: containerAppsEnvironmentName

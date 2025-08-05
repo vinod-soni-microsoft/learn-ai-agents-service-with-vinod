@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AgentPreview } from "./agents/AgentPreview";
 import { ThemeProvider } from "./core/theme/ThemeProvider";
+import { apiCall } from "../utils/api";
 
 const App: React.FC = () => {
   // State to store the agent details
@@ -20,12 +21,8 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetchAgentDetails = async () => {
       try {
-        const response = await fetch("/agent", {
+        const response = await apiCall("/agent", {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
         });
 
         if (response.ok) {
@@ -33,10 +30,6 @@ const App: React.FC = () => {
           console.log(
             "Agent details fetched successfully:",
             JSON.stringify(data)
-          );
-          console.log(
-            "Agent details fetched successfully 2:",
-            JSON.stringify(response)
           );
           setAgentDetails(data);
         } else {

@@ -315,6 +315,22 @@ module api 'api.bicep' = {
     enableAzureMonitorTracing: enableAzureMonitorTracing
     azureTracingGenAIContentRecordingEnabled: azureTracingGenAIContentRecordingEnabled
     projectEndpoint: projectEndpoint
+    frontendUrl: '*'  // Wildcard CORS for now to avoid circular dependency
+  }
+}
+
+// Frontend app
+module frontend 'frontend.bicep' = {
+  name: 'frontend'
+  scope: rg
+  params: {
+    name: 'ca-frontend-${resourceToken}'
+    location: location
+    tags: tags
+    identityName: '${abbrs.managedIdentityUserAssignedIdentities}frontend-${resourceToken}'
+    containerAppsEnvironmentName: containerApps.outputs.environmentName
+    containerRegistryName: containerApps.outputs.registryName
+    backendApiUrl: api.outputs.SERVICE_API_URI
   }
 }
 
@@ -478,5 +494,9 @@ output SERVICE_API_IDENTITY_PRINCIPAL_ID string = api.outputs.SERVICE_API_IDENTI
 output SERVICE_API_NAME string = api.outputs.SERVICE_API_NAME
 output SERVICE_API_URI string = api.outputs.SERVICE_API_URI
 output SERVICE_API_ENDPOINTS array = ['${api.outputs.SERVICE_API_URI}']
+output SERVICE_FRONTEND_IDENTITY_PRINCIPAL_ID string = frontend.outputs.SERVICE_FRONTEND_IDENTITY_PRINCIPAL_ID
+output SERVICE_FRONTEND_NAME string = frontend.outputs.SERVICE_FRONTEND_NAME
+output SERVICE_FRONTEND_URI string = frontend.outputs.SERVICE_FRONTEND_URI
+output SERVICE_FRONTEND_ENDPOINTS array = ['${frontend.outputs.SERVICE_FRONTEND_URI}']
 output SEARCH_CONNECTION_ID string = ''
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerApps.outputs.registryLoginServer
