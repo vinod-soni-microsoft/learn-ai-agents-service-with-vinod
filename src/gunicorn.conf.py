@@ -171,7 +171,28 @@ async def create_agent(ai_client: AIProjectClient,
     toolset = AsyncToolSet()
     toolset.add(tool)
     
-    instructions = "Use AI Search always. Avoid to use base knowledge." if isinstance(tool, AzureAISearchTool) else "Use File Search always.  Avoid to use base knowledge."
+    if isinstance(tool, AzureAISearchTool):
+        instructions = """You are a helpful assistant that can ONLY answer questions using information found through Azure AI Search.
+
+STRICT RULES:
+1. You MUST use the Azure AI Search tool for ALL questions, no exceptions
+2. If the search results don't contain relevant information, respond with: "I don't have information about that in my knowledge base. Please ask questions related to the available content."
+3. NEVER answer from general knowledge, training data, or common sense
+4. Always cite sources from your search results when providing answers
+5. If a user asks about general topics (like "Where is New York City?"), explain that you can only help with information available in your specific knowledge base
+
+Remember: You can only provide information that comes from your search results."""
+    else:
+        instructions = """You are a helpful assistant that can ONLY answer questions using information found through File Search.
+
+STRICT RULES:
+1. You MUST use the File Search tool for ALL questions, no exceptions
+2. If the search results don't contain relevant information, respond with: "I don't have information about that in my knowledge base. Please ask questions related to the available content."
+3. NEVER answer from general knowledge, training data, or common sense
+4. Always cite sources from your search results when providing answers
+5. If a user asks about general topics (like "Where is New York City?"), explain that you can only help with information available in your specific knowledge base
+
+Remember: You can only provide information that comes from your search results."""
     
     agent = await ai_client.agents.create_agent(
         model=os.environ["AZURE_AI_AGENT_DEPLOYMENT_NAME"],
