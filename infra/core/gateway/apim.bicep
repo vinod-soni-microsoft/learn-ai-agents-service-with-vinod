@@ -34,9 +34,6 @@ param backendApiUrl string
 @description('Enable CORS policy')
 param enableCors bool = true
 
-@description('Allowed CORS origins')
-param corsAllowedOrigins array = ['*']
-
 resource apim 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   name: name
   location: location
@@ -158,7 +155,7 @@ resource corsPolicy 'Microsoft.ApiManagement/service/apis/policies@2023-05-01-pr
   <inbound>
     <cors allow-credentials="true">
       <allowed-origins>
-        ${join(map(corsAllowedOrigins, origin => '<origin>${origin}</origin>'), '\n        ')}
+        <origin>*</origin>
       </allowed-origins>
       <allowed-methods>
         <method>GET</method>

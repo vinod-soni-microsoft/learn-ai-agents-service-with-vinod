@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5525590704285055214"
+      "templateHash": "2627381629836900666"
     }
   },
   "parameters": {
@@ -4641,11 +4641,6 @@
           },
           "enableCors": {
             "value": true
-          },
-          "corsAllowedOrigins": {
-            "value": [
-              "*"
-            ]
           }
         },
         "template": {
@@ -4655,7 +4650,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "2763589936887463106"
+              "templateHash": "2857424727062780844"
             },
             "description": "Creates an Azure API Management instance."
           },
@@ -4724,15 +4719,6 @@
               "defaultValue": true,
               "metadata": {
                 "description": "Enable CORS policy"
-              }
-            },
-            "corsAllowedOrigins": {
-              "type": "array",
-              "defaultValue": [
-                "*"
-              ],
-              "metadata": {
-                "description": "Allowed CORS origins"
               }
             }
           },
@@ -4872,7 +4858,7 @@
               "apiVersion": "2023-05-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('name'), 'agents-api', 'policy')]",
               "properties": {
-                "value": "<policies>\n  <inbound>\n    <cors allow-credentials=\"true\">\n      <allowed-origins>\n        ${join(map(corsAllowedOrigins, origin => '<origin>${origin}</origin>'), '\\n        ')}\n      </allowed-origins>\n      <allowed-methods>\n        <method>GET</method>\n        <method>POST</method>\n        <method>PUT</method>\n        <method>DELETE</method>\n        <method>OPTIONS</method>\n      </allowed-methods>\n      <allowed-headers>\n        <header>*</header>\n      </allowed-headers>\n    </cors>\n    <set-backend-service backend-id=\"fastapi-backend\" />\n    <base />\n  </inbound>\n  <backend>\n    <base />\n  </backend>\n  <outbound>\n    <base />\n  </outbound>\n  <on-error>\n    <base />\n  </on-error>\n</policies>\n"
+                "value": "<policies>\n  <inbound>\n    <cors allow-credentials=\"true\">\n      <allowed-origins>\n        <origin>*</origin>\n      </allowed-origins>\n      <allowed-methods>\n        <method>GET</method>\n        <method>POST</method>\n        <method>PUT</method>\n        <method>DELETE</method>\n        <method>OPTIONS</method>\n      </allowed-methods>\n      <allowed-headers>\n        <header>*</header>\n      </allowed-headers>\n    </cors>\n    <set-backend-service backend-id=\"fastapi-backend\" />\n    <base />\n  </inbound>\n  <backend>\n    <base />\n  </backend>\n  <outbound>\n    <base />\n  </outbound>\n  <on-error>\n    <base />\n  </on-error>\n</policies>\n"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.ApiManagement/service/apis', parameters('name'), 'agents-api')]"

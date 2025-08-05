@@ -301,3 +301,33 @@ There are several ways to deploy the solution. You can deploy to run in Azure in
 
 When Deployment is complete, follow steps in [Set Up Authentication in Azure App Service](azure_app_service_auth_setup.md) to add app authentication with AAD to your web app running on Azure App Service.  Alternatively, run `./scripts/setup_credential.ps1` or `./scripts/setup_credential.sh` to setup basic auth with username and password.
 
+
+The implementation is backward compatible - when APIM is disabled (ENABLE_APIM=false), the solution works exactly as before with direct FastAPI access. When enabled, all API calls are routed through the APIM gateway with enhanced security and monitoring capabilities.
+
+# Enable APIM
+azd env set ENABLE_APIM true
+
+# Optional: Customize APIM settings
+azd env set APIM_PUBLISHER_NAME "Your Organization"
+azd env set APIM_PUBLISHER_EMAIL "admin@yourorg.com"
+azd env set APIM_SKU "Consumption"
+
+# Deploy the infrastructure
+azd up
+
+# Configure frontend for APIM (after deployment)
+./scripts/configure_apim_frontend.sh
+
+🔍 Key Benefits
+Centralized Gateway: All API calls routed through a managed gateway
+Security: Built-in authentication, authorization, and rate limiting capabilities
+CORS Management: Centralized CORS policy configuration
+Analytics: API usage monitoring and analytics
+Developer Experience: API documentation and testing portal
+Scalability: Load balancing and caching capabilities
+🏭 Production Considerations
+Security: Update CORS policy to restrict origins to your domains
+Authentication: Add API key or OAuth authentication policies
+Rate Limiting: Configure appropriate rate limits for your use case
+Monitoring: Enable Application Insights for detailed telemetry
+Cost: Choose appropriate SKU based on expected API volume

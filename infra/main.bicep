@@ -331,7 +331,6 @@ module apim 'core/gateway/apim.bicep' = if (enableAPIM) {
     sku: apimSku
     backendApiUrl: 'https://${api.outputs.SERVICE_API_URI}'
     enableCors: true
-    corsAllowedOrigins: ['*']
   }
 }
 
